@@ -1,0 +1,51 @@
+name: apps-portal
+
+services:
+  portal:
+    image: caddy:2-alpine
+    container_name: apps-portal-caddy
+    restart: unless-stopped
+    ports:
+      - "3838:8081"                       # plain HTTP — TLS terminates at the Cloudflare Tunnel
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./index.html:/srv/portal/index.html:ro
+    depends_on:
+      motorcyclefuel:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks: [apps-net]
+
+  # ── Apps ────────────────────────────────────────────────────────────────
+  # Each app = the SAME generic image (app-host) + its repo mounted at /srv/app.
+  # Deploy/update an app:  git -C apps/<Name> pull && docker compose restart <svc>
+  motorcyclefuel:
+    build:
+      context: .
+      dockerfile: Dockerfile.app-host
+    image: app-host:1.0
+    container_name: fz6-motorcyclefuel
+    restart: unless-stopped
+    volumes:
+      - ./apps/MotorcycleFuelEfficiency/FZ6_fueleff:/srv/app:ro
+      # ../data/fuel_dat.csv (the app's offline fallback) resolves to /srv/data:
+      - ./apps/MotorcycleFuelEfficiency/data:/srv/data:ro
+    command: ["R", "-e", "shiny::runApp('/srv/app', port=3838, host='0.0.0.0', launch.browser=FALSE)"]
+    environment:
+      - TZ=Australia/Brisbane
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:3838/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks: [apps-net]
+
+networks:
+  apps-net:
+    name: apps-net

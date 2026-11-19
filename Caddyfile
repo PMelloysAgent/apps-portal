@@ -1,0 +1,24 @@
+:8081 {
+	# ═══════════════════════════════════════════════════════════════════
+	# Apps portal — serves the index page and routes /shiny/<App>/* to
+	# each Shiny container. Shiny cannot mount on a subpath, but emits
+	# relative URLs, so handle_path (strip prefix + forward) works — see
+	# https://github.com/PMelloysAgent/apps-portal README.
+	#
+	# TO ADD AN APP: copy the two lines below, swap the name + service,
+	# add the compose block + an index.html entry. Reload: docker exec
+	# apps-portal-caddy caddy reload --config /etc/caddy/Caddyfile
+	# ═══════════════════════════════════════════════════════════════════
+
+	# ── MotorcycleFuelEfficiency ──
+	redir /shiny/MotorcycleFuelEfficiency /shiny/MotorcycleFuelEfficiency/ 302
+	handle_path /shiny/MotorcycleFuelEfficiency/* {
+		reverse_proxy motorcyclefuel:3838
+	}
+
+	# ── Portal index page (must come AFTER app routes) ──
+	handle {
+		root * /srv/portal
+		file_server
+	}
+}

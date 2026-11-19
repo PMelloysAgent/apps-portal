@@ -1,0 +1,20 @@
+# The container apps deploy INTO: R + the shared package universe.
+# Add a package for any app here, then:
+#   docker compose build && docker compose up -d
+# (rocker/r2u = binary apt packages, multi-arch: builds on x86 and ARM.)
+FROM rocker/r2u:24.04
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        r-cran-shiny \
+        r-cran-bslib \
+        r-cran-googlesheets4 \
+        r-cran-dplyr \
+        r-cran-ggplot2 \
+        r-cran-plotly \
+        r-cran-dt \
+        r-cran-lubridate \
+        curl && \
+    rm -rf /var/lib/apt/lists/*
+
+EXPOSE 3838

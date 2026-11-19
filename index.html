@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paul's Apps</title>
+<style>
+  :root { --bg:#0f1520; --card:#1b2433; --ink:#e8edf4; --sub:#9db0c7; --accent:#56b4e9; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:780px; margin:0 auto; padding:3rem 1.25rem; }
+  h1 { font-size:1.9rem; margin:0 0 .25rem; }
+  .sub { color:var(--sub); margin-bottom:2rem; }
+  .card { display:block; background:var(--card); border:1px solid #2a3750; border-radius:12px;
+          padding:1.1rem 1.3rem; margin-bottom:1rem; text-decoration:none; color:inherit;
+          transition: border-color .15s, transform .15s; }
+  .card:hover { border-color:var(--accent); transform: translateY(-2px); }
+  .card h2 { margin:0 0 .25rem; font-size:1.15rem; color:var(--accent); }
+  .card p { margin:0; color:var(--sub); font-size:.92rem; }
+  .path { font-family:ui-monospace,monospace; font-size:.8rem; color:#6f819c; margin-top:.4rem; }
+  footer { margin-top:3rem; color:#54657e; font-size:.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⚙️ Paul's Apps</h1>
+  <p class="sub">Homelab services hosted on hermpi — pick one.</p>
+
+  <!-- To add an app: copy a <a class="card"> block, point href at its
+       /shiny/<Name>/ path (see Caddyfile), and add the route + service
+       in docker-compose.yml. -->
+  <a class="card" href="/shiny/MotorcycleFuelEfficiency/">
+    <h2>🏍️ FZ6N Fuel Efficiency</h2>
+    <p>Live dashboard of every fuel fill-up — economy, cost per km, station and octane comparisons. Data from a Google Form, updated automatically.</p>
+    <div class="path">/shiny/MotorcycleFuelEfficiency/</div>
+  </a>
+
+  <footer>apps.paulmelloy.com.au · served by apps-portal (Caddy + Shiny containers)</footer>
+</div>
+</body>
+</html>
